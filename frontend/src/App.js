@@ -9,7 +9,7 @@ export default function App() {
 	return (
 		<BrowserRouter>
 			<div>
-				<Nav />
+				{/* <Nav /> */}
 				<Switch>
 					<Route path="/login" exact component={Login} />
 					<Route path="/register" exact component={Register} />

@@ -12,7 +12,6 @@ export default function Register() {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
-
 	const [goodPassword, setGoodPassword] = useState(false);
 
 	const [focusUser, setFocusUser] = useState("input-div one");
@@ -20,10 +19,10 @@ export default function Register() {
 	const [focusConfPass, setFocusConfPass] = useState(
 		"input-div pass bad-password"
 	);
-
 	const [btnState, setBtnState] = useState("btn bad-password");
-
 	const [loading, setLoading] = useState(false);
+
+	const [passwordReq, setPasswordReq] = useState(false);
 
 	const passwordValidation = RegExp(
 		/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/
@@ -39,9 +38,11 @@ export default function Register() {
 				setFocusUser(focusUser + " focus");
 				break;
 			case "password":
+				if (!goodPassword) setPasswordReq(false);
 				setFocusPass(focusPass + " focus");
 				break;
 			case "confirm-password":
+				if (!goodPassword) setPasswordReq(false);
 				setFocusConfPass(focusConfPass + " focus");
 				break;
 		}
@@ -50,26 +51,25 @@ export default function Register() {
 	const handleBlur = (e) => {
 		const { name, value } = e.target;
 
-		if (value == "") {
+		if (value === "") {
 			switch (name) {
 				case "username":
 					setFocusUser("input-div one");
 					break;
 				case "password":
-					if (goodPassword) setFocusPass("input-div pass");
-					else setFocusPass("input-div pass bad-password");
+					if (goodPassword) {
+						setFocusPass("input-div pass");
+						setPasswordReq(true);
+					} else setFocusPass("input-div pass bad-password");
 					break;
 				case "confirm-password":
-					if (goodPassword) setFocusConfPass("input-div pass");
-					else setFocusConfPass("input-div pass bad-password");
+					if (goodPassword) {
+						setFocusConfPass("input-div pass");
+						setPasswordReq(true);
+					} else setFocusConfPass("input-div pass bad-password");
 					break;
 			}
 		}
-	};
-
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		setLoading(false);
 	};
 
 	const handleChange = (e) => {
@@ -82,10 +82,10 @@ export default function Register() {
 					let checkedPassword = value === confirmPassword;
 					setGoodPassword(checkedPassword);
 					if (checkedPassword) {
-						console.log("good");
 						setBtnState("btn");
 						setFocusPass("input-div pass focus");
 						setFocusConfPass("input-div pass focus");
+						setPasswordReq(true);
 						break;
 					}
 				}
@@ -96,6 +96,7 @@ export default function Register() {
 				if (focusConfPass.includes("focus"))
 					setFocusConfPass("input-div pass focus bad-password");
 				else setFocusConfPass("input-div pass bad-password");
+				setPasswordReq(false);
 				break;
 			case "confirm-password":
 				setConfirmPassword(value);
@@ -106,6 +107,7 @@ export default function Register() {
 						setBtnState("btn");
 						setFocusPass("input-div pass focus");
 						setFocusConfPass("input-div pass focus");
+						setPasswordReq(true);
 						break;
 					}
 				}
@@ -116,13 +118,25 @@ export default function Register() {
 				if (focusConfPass.includes("focus"))
 					setFocusConfPass("input-div pass focus bad-password");
 				else setFocusConfPass("input-div pass bad-password");
+				setPasswordReq(false);
 				break;
 		}
 	};
 
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		setLoading(false);
+	};
+
 	function Loading(props) {
 		if (loading)
-			return <img className="loading" src={require("./Images/loading.svg")} />;
+			return (
+				<img
+					className="loading"
+					src={require("./Images/loading.svg")}
+					alt="Loading"
+				/>
+			);
 		else return "";
 	}
 
@@ -201,6 +215,20 @@ export default function Register() {
 								/>
 							</div>
 						</div>
+						<p
+							hidden={passwordReq}
+							style={{
+								paddingBottom: "1rem",
+								paddingTop: "1rem",
+								color: "gray",
+								fontFamily: "sans-serif",
+								fontSize: "12px",
+							}}
+						>
+							Password must contain 1 upper, 1 lower, 1 digit, 1 special character, and
+							be at least 8 characters
+						</p>
+						<NavLink to={"/login"}>Already have an account?</NavLink>
 						<input
 							type="submit"
 							className={btnState}
