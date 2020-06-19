@@ -2,33 +2,33 @@
 
 module.exports = function (sequelize, DataTypes) {
 	return sequelize.define(
-		"SxG",
+		"SetGear",
 		{
-			idSxG: {
+			idSetGear: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
 				primaryKey: true,
 				autoIncrement: true,
 			},
-			SetId: {
+			setId: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
 				references: {
 					model: "Set",
-					key: "SetId",
+					key: "setId",
 				},
 			},
-			GearId: {
+			searId: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
 				references: {
 					model: "Gear",
-					key: "GearId",
+					key: "gearId",
 				},
 			},
 		},
 		{
-			tableName: "SxG",
+			tableName: "SetGear",
 			timestamps: false,
 			freezeTableNames: true,
 		}

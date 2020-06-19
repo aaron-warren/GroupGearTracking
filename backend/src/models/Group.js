@@ -1,28 +1,34 @@
 /* jshint indent: 2 */
 
 module.exports = function (sequelize, DataTypes) {
-	return sequelize.define(
+	const Group = sequelize.define(
 		"Group",
 		{
-			GroupId: {
+			groupId: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
 				primaryKey: true,
 				autoIncrement: true,
 			},
-			OwnerId: {
+			ownerId: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
 				references: {
 					model: "Character",
-					key: "CharacterId",
+					key: "characterId",
 				},
 			},
 		},
 		{
 			tableName: "Group",
-			timestamps: false,
 			freezeTableNames: true,
 		}
 	);
+
+	Group.associate = (models) => {
+		Group.belongsTo(models.Character);
+		Group.hasMany(models.GroupMembers);
+	};
+
+	return Group;
 };

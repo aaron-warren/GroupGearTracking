@@ -1,19 +1,19 @@
 /* jshint indent: 2 */
 
 module.exports = function (sequelize, DataTypes) {
-	return sequelize.define(
+	const Tome = sequelize.define(
 		"Tome",
 		{
-			TomeId: {
+			tomeId: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
 				primaryKey: true,
 				references: {
 					model: "Gear",
-					key: "GearId",
+					key: "gearId",
 				},
 			},
-			Upgrade: {
+			upgrade: {
 				type: DataTypes.STRING(45),
 				allowNull: false,
 			},
@@ -24,4 +24,10 @@ module.exports = function (sequelize, DataTypes) {
 			freezeTableNames: true,
 		}
 	);
+
+	Tome.associate = (models) => {
+		Tome.belongsTo(models.Gear);
+	};
+
+	return Tome;
 };

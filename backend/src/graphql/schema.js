@@ -6,11 +6,12 @@ const {
 	GraphQLList,
 	GraphQLNonNull,
 } = require("graphql");
+const GraphQLDate = require("graphql-date");
 const {
 	AccountType,
 	CharacterType,
 	SetType,
-	SxGType,
+	SetGearType,
 	GearType,
 	DropType,
 	TomeType,
@@ -19,6 +20,7 @@ const {
 } = require("./objectTypes");
 const argon2 = require("argon2");
 const db = require("../sql/sql");
+const jwt = require("jsonwebtoken");
 
 const query = new GraphQLObjectType({
 	name: "Query",
@@ -50,14 +52,14 @@ const query = new GraphQLObjectType({
 const mutation = new GraphQLObjectType({
 	name: "Mutation",
 	fields: () => ({
-		account: {
-			type: GraphQLString,
+		addAccount: {
+			type: AccountType,
 			args: {
 				username: { type: GraphQLNonNull(GraphQLString) },
 				password: { type: GraphQLNonNull(GraphQLString) },
 			},
-			resolve: (parent, args) => {
-				const hash = argon2.hash(args.password);
+			resolve: async (parent, args) => {
+				const hash = await argon2.hash(args.password);
 				const account = db.Account.create({
 					username: args.username,
 					password: hash,

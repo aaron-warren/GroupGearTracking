@@ -6,7 +6,9 @@ const {
 	GraphQLList,
 	GraphQLNonNull,
 	GraphQLBoolean,
+	GraphQLScalarType,
 } = require("graphql");
+const GraphQLDate = require("graphql-date");
 const db = require("../sql/sql");
 
 const AccountType = new GraphQLObjectType({
@@ -16,6 +18,8 @@ const AccountType = new GraphQLObjectType({
 		accountId: { type: GraphQLNonNull(GraphQLInt) },
 		username: { type: GraphQLNonNull(GraphQLString) },
 		password: { type: GraphQLNonNull(GraphQLString) },
+		createdAt: { type: GraphQLNonNull(GraphQLDate) },
+		updatedAt: { type: GraphQLNonNull(GraphQLDate) },
 		characters: {
 			type: new GraphQLList(CharacterType),
 			resolve: (account) => {
@@ -34,6 +38,8 @@ const CharacterType = new GraphQLObjectType({
 		server: { type: GraphQLNonNull(GraphQLString) },
 		datacenter: { type: GraphQLNonNull(GraphQLString) },
 		accountId: { type: GraphQLNonNull(GraphQLInt) },
+		createdAt: { type: GraphQLNonNull(GraphQLDate) },
+		updatedAt: { type: GraphQLNonNull(GraphQLDate) },
 		sets: {
 			type: new GraphQLList(SetType),
 			resolve: (character) => {
@@ -53,7 +59,10 @@ const SetType = new GraphQLObjectType({
 		gear: {
 			type: new GraphQLList(FullGearType),
 			resolve: (set) => {
-				const setIds = db.SxG.findAll({ where: { SetId: set.setId }, raw: true });
+				const setIds = db.SetGear.findAll({
+					where: { SetId: set.setId },
+					raw: true,
+				});
 
 				const items = setIds.map((set) => {
 					return {
@@ -87,10 +96,10 @@ const SetType = new GraphQLObjectType({
 	}),
 });
 
-const SxGType = new GraphQLObjectType({
+const SetGearType = new GraphQLObjectType({
 	name: "SetGearLink",
 	fields: () => ({
-		idSxG: { type: GraphQLNonNull(GraphQLInt) },
+		idSetGear: { type: GraphQLNonNull(GraphQLInt) },
 		setId: { type: GraphQLNonNull(GraphQLInt) },
 		gearId: { type: GraphQLNonNull(GraphQLInt) },
 	}),
@@ -129,6 +138,8 @@ const GroupType = new GraphQLObjectType({
 	fields: () => ({
 		groupId: { type: GraphQLNonNull(GraphQLInt) },
 		ownerId: { type: GraphQLNonNull(GraphQLInt) },
+		createdAt: { type: GraphQLNonNull(GraphQLDate) },
+		updatedAt: { type: GraphQLNonNull(GraphQLDate) },
 	}),
 });
 
@@ -139,6 +150,8 @@ const GroupMembersType = new GraphQLObjectType({
 		groupMemberId: { type: GraphQLNonNull(GraphQLInt) },
 		memberId: { type: GraphQLNonNull(GraphQLInt) },
 		groupId: { type: GraphQLNonNull(GraphQLInt) },
+		createdAt: { type: GraphQLNonNull(GraphQLDate) },
+		updatedAt: { type: GraphQLNonNull(GraphQLDate) },
 	}),
 });
 
@@ -159,7 +172,7 @@ module.exports = {
 	AccountType,
 	CharacterType,
 	SetType,
-	SxGType,
+	SetGearType,
 	GearType,
 	DropType,
 	TomeType,

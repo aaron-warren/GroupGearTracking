@@ -1,32 +1,38 @@
 /* jshint indent: 2 */
 
 module.exports = function (sequelize, DataTypes) {
-	return sequelize.define(
+	const Set = sequelize.define(
 		"Set",
 		{
-			SetId: {
+			setId: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
 				primaryKey: true,
 				autoIncrement: true,
 			},
-			Class: {
+			class: {
 				type: DataTypes.STRING(3),
 				allowNull: false,
 			},
-			CharacterId: {
+			characterId: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
 				references: {
 					model: "Character",
-					key: "CharacterId",
+					key: "characterId",
 				},
 			},
 		},
 		{
 			tableName: "Set",
-			timestamps: false,
 			freezeTableNames: true,
 		}
 	);
+
+	Set.associate = (models) => {
+		Set.belongsTo(models.Character);
+		Set.belongsToMany(models.Gear, { through: models.SetGear });
+	};
+
+	return Set;
 };

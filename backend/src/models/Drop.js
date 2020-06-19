@@ -1,19 +1,17 @@
-/* jshint indent: 2 */
-
 module.exports = function (sequelize, DataTypes) {
-	return sequelize.define(
+	const Drop = sequelize.define(
 		"Drop",
 		{
-			DropId: {
+			dropId: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
 				primaryKey: true,
 				references: {
 					model: "Gear",
-					key: "GearId",
+					key: "gearId",
 				},
 			},
-			Floor: {
+			floor: {
 				type: DataTypes.STRING(5),
 				allowNull: false,
 			},
@@ -24,4 +22,10 @@ module.exports = function (sequelize, DataTypes) {
 			freezeTableNames: true,
 		}
 	);
+
+	Drop.associate = (models) => {
+		Drop.belongsTo(models.Gear);
+	};
+
+	return Drop;
 };

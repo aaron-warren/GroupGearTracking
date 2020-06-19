@@ -29,7 +29,7 @@ db.Gear = sequelize.import("../models/Gear");
 db.Group = sequelize.import("../models/Group");
 db.GroupMembers = sequelize.import("../models/GroupMembers");
 db.Set = sequelize.import("../models/Set");
-db.SxG = sequelize.import("../models/SxG");
+db.SetGear = sequelize.import("../models/SetGear");
 db.Tome = sequelize.import("../models/Tome");
 
 module.exports = db;

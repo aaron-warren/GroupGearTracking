@@ -15,6 +15,13 @@ app.use(
 	})
 );
 
+// sync();
+
+async function sync() {
+	await db.sequelize.sync({ force: true, match: /_test$/ });
+	console.log("Synchronized tables");
+}
+
 // app.use("/", async (req, res) => {
 // const test = await db.account.findOne({ where: { accountID: 1 } });
 // test.setDataValue("name", "Albina Scarsbrick");

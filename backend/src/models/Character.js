@@ -1,40 +1,45 @@
-/* jshint indent: 2 */
-
 module.exports = function (sequelize, DataTypes) {
-	return sequelize.define(
+	const Character = sequelize.define(
 		"Character",
 		{
-			CharacterId: {
+			characterId: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
 				primaryKey: true,
 				autoIncrement: true,
 			},
-			Name: {
+			name: {
 				type: DataTypes.STRING(45),
 				allowNull: false,
 			},
-			Server: {
+			server: {
 				type: DataTypes.STRING(45),
 				allowNull: false,
 			},
-			Datacenter: {
+			datacenter: {
 				type: DataTypes.STRING(45),
 				allowNull: false,
 			},
-			AccountId: {
+			accountId: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
 				references: {
 					model: "Account",
-					key: "AccountId",
+					key: "accountId",
 				},
 			},
 		},
 		{
 			tableName: "Character",
-			timestamps: false,
 			freezeTableNames: true,
 		}
 	);
+
+	Character.associate = (models) => {
+		Character.belongsTo(models.Account);
+		Character.belongsToMany(models.Group);
+		Character.hasMany(models.Set);
+	};
+
+	return Character;
 };
