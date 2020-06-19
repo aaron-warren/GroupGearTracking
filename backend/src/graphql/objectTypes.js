@@ -29,6 +29,14 @@ const AccountType = new GraphQLObjectType({
 	}),
 });
 
+const LoginType = new GraphQLObjectType({
+	name: "Login",
+	fields: () => ({
+		accountId: { type: GraphQLNonNull(GraphQLInt) },
+		token: { type: GraphQLString },
+	}),
+});
+
 const CharacterType = new GraphQLObjectType({
 	name: "Characters",
 	description: "Player characters",
@@ -178,4 +186,5 @@ module.exports = {
 	TomeType,
 	GroupType,
 	GroupMembersType,
+	LoginType,
 };

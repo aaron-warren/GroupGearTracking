@@ -17,6 +17,7 @@ const {
 	TomeType,
 	GroupType,
 	GroupMembersType,
+	LoginType,
 } = require("./objectTypes");
 const argon2 = require("argon2");
 const db = require("../sql/sql");
@@ -66,6 +67,45 @@ const mutation = new GraphQLObjectType({
 				});
 
 				return account;
+			},
+		},
+		login: {
+			type: LoginType,
+			args: {
+				username: { type: GraphQLNonNull(GraphQLString) },
+				password: { type: GraphQLNonNull(GraphQLString) },
+			},
+			resolve: async (parent, args) => {
+				const loginInfo = await db.Account.findOne({
+					where: { username: args.username },
+				});
+
+				try {
+					if (await argon2.verify(loginInfo.password, args.password)) {
+						var token = jwt.sign(
+							{
+								accountId: loginInfo.accountId,
+								username: loginInfo.username,
+							},
+							process.env.JWT_TOKEN
+						);
+
+						loginInfo.token = token;
+
+						return loginInfo;
+					} else {
+						loginInfo.accountId = -1;
+						loginInfo.token = "";
+						return loginInfo;
+					}
+				} catch (err) {
+					return {
+						accountId: -1,
+						token: "",
+					};
+				}
+
+				return loginInfo;
 			},
 		},
 	}),

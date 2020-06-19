@@ -24,7 +24,7 @@ module.exports = function (sequelize, DataTypes) {
 		}
 	);
 
-	Account.associate = function (models) {
+	Account.associate = (models) => {
 		Account.hasMany(models.Character);
 	};
 
